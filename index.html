@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conecta Solidário - Doações e Voluntariado</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --primary-hover: #1b5e20;
+      --secondary: #0288d1;
+      --accent: #f57c00;
+      --bg: #f4f6f8;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --text-light: #666666;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .main-header {
+      background-color: var(--primary);
+      color: #fff;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      font-size: 2rem;
+      color: #81c784;
+    }
+
+    .main-header h1 {
+      font-size: 1.4rem;
+    }
+
+    .main-header p {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-admin {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+
+    .btn-admin:hover {
+      background: #fff;
+      color: var(--primary);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 0 15px;
+      flex: 1;
+      width: 100%;
+    }
+
+    .banner {
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      padding: 20px;
+      border-radius: var(--radius);
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .banner h2 {
+      color: var(--primary-hover);
+      margin-bottom: 8px;
+    }
+
+    /* Grid de Cards */
+    .instituicoes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .card-inst {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid #e0e0e0;
+    }
+
+    .card-inst:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    }
+
+    .card-header-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+
+    .card-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .card-title-area h3 {
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+
+    .card-bairro {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      line-height: 1.4;
+      margin-bottom: 15px;
+      flex: 1;
+    }
+
+    .btn-ver-mais {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      text-align: center;
+      transition: background 0.3s;
+    }
+
+    .btn-ver-mais:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* Modais */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      overflow-y: auto;
+    }
+
+    .modal-content {
+      background: white;
+      width: 100%;
+      max-width: 650px;
+      border-radius: var(--radius);
+      padding: 25px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-small {
+      max-width: 400px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #888;
+    }
+
+    .modal-header-inst {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    #modal-logo {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .badge-location {
+      background: #e3f2fd;
+      color: #1976d2;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+
+    .modal-desc {
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .modal-info {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    /* Pix Box */
+    .pix-box {
+      background: #e8f5e9;
+      border: 1px dashed var(--primary);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+
+    .pix-box h3 {
+      color: var(--primary-hover);
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .pix-key-wrapper {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .pix-key-wrapper input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .pix-key-wrapper button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Abas */
+    .action-tabs {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+      color: var(--text-light);
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+      padding-top: 15px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Listas de Ação */
+    .items-list {
+      list-style: none;
+    }
+
+    .items-list li {
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .item-info h4 {
+      font-size: 0.95rem;
+    }
+
+    .item-info p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .btn-agendar-item {
+      background: var(--secondary);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .btn-delete-item {
+      background: #d32f2f;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    /* Formulário Agendamento / Painel */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 100%;
+    }
+
+    .btn-confirmar-whats {
+      background: #25d366;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    /* Estilos do Painel da Instituição */
+    #painel-instituicao {
+      display: none;
+      background: white;
+      padding: 25px;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .painel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .btn-sair {
+      background: #d32f2f;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .painel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .painel-card {
+      background: #fdfdfd;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .painel-card h3 {
+      font-size: 1.1rem;
+      color: var(--primary-hover);
+      margin-bottom: 15px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 8px;
+    }
+
+    .main-footer {
+      text-align: center;
+      padding: 15px;
+      background: #e0e0e0;
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 30px;
+    }
+
+    .loading-state {
+      text-align: center;
+      grid-column: 1 / -1;
+      padding: 40px;
+      color: var(--text-light);
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho Principal -->
+  <header class="main-header">
+    <div class="logo-area">
+      <i class="fa-solid fa-hand-holding-heart logo-icon"></i>
+      <div>
+        <h1>Conecta Solidário</h1>
+        <p>Aproximando quem quer ajudar de quem precisa</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="btn-login-painel" class="btn-admin" onclick="abrirModalLogin()">
+        <i class="fa-solid fa-user-lock"></i> Área da Instituição
+      </button>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal / Doador -->
+  <main class="container" id="visao-publica">
+    <section class="banner">
+      <h2>Encontre projetos sociais na sua região</h2>
+      <p>Escolha uma instituição para doar itens, realizar PIX direto ou agendar um trabalho voluntário.</p>
+    </section>
+
+    <!-- Lista de Cards -->
+    <section class="instituicoes-grid" id="grid-instituicoes">
+      <div class="loading-state">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Carregando instituições parceiras...</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- PAINEL ADMINISTRATIVO DA INSTITUIÇÃO -->
+  <main class="container" id="painel-instituicao">
+    <div class="painel-header">
+      <div>
+        <h2 id="painel-nome-inst">Painel de Gestão</h2>
+        <p>Gerencie suas necessidades, vagas e visualize os agendamentos recebidos.</p>
+      </div>
+      <button class="btn-sair" onclick="deslogarPainel()"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+    </div>
+
+    <!-- Abas do Painel -->
+    <div class="action-tabs">
+      <button class="tab-btn active" onclick="alternarAbaPainel('tab-p-agendamentos')"><i class="fa-solid fa-calendar-days"></i> Agendamentos Recebidos</button>
+      <button class="tab-btn" onclick="alternarAbaPainel('tab-p-necessidades')"><i class="fa-solid fa-box-open"></i> Cadastrar Necessidades</button>
+      <button class="tab-btn" onclick="alternarAbaPainel('tab-p-vagas')"><i class="fa-solid fa-hands-helping"></i> Vagas de Voluntariado</button>
+    </div>
+
+    <!-- Aba 1: Agendamentos -->
+    <div id="tab-p-agendamentos" class="tab-content active">
+      <h3>Agendamentos e Intenções de Ajuda</h3>
+      <ul id="lista-painel-agendamentos" class="items-list" style="margin-top:15px;">
+        <li>Carregando agendamentos...</li>
+      </ul>
+    </div>
+
+    <!-- Aba 2: Cadastrar Necessidade -->
+    <div id="tab-p-necessidades" class="tab-content">
+      <div class="painel-grid">
+        <div class="painel-card">
+          <h3>Nova Necessidade de Material</h3>
+          <form class="form-group" onsubmit="adicionarNecessidade(event)">
+            <input type="text" id="nec-item" placeholder="Ex: Leite Integral" required>
+            <input type="number" id="nec-qtd" placeholder="Quantidade necessária" required>
+            <input type="text" id="nec-unidade" placeholder="Unidade (ex: Litros, Caixas, Pacotes)" required>
+            <select id="nec-urgencia">
+              <option value="Baixa">Urgência: Baixa</option>
+              <option value="Média" selected>Urgência: Média</option>
+              <option value="Alta">Urgência: Alta</option>
+            </select>
+            <button type="submit" class="btn-ver-mais">+ Cadastrar Item</button>
+          </form>
+        </div>
+        <div class="painel-card">
+          <h3>Itens Solicitados Atualmente</h3>
+          <ul id="lista-painel-necessidades" class="items-list"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aba 3: Vagas Voluntariado -->
+    <div id="tab-p-vagas" class="tab-content">
+      <div class="painel-grid">
+        <div class="painel-card">
+          <h3>Nova Vaga de Voluntariado</h3>
+          <form class="form-group" onsubmit="adicionarVaga(event)">
+            <input type="text" id="vag-titulo" placeholder="Título do Serviço (Ex: Jardinagem)" required>
+            <textarea id="vag-desc" placeholder="Descrição das atividades..." required></textarea>
+            <input type="text" id="vag-dias" placeholder="Dias (Ex: Sábados e Domingos)" required>
+            <input type="text" id="vag-horario" placeholder="Horário (Ex: 08:00 às 11:00)" required>
+            <button type="submit" class="btn-ver-mais">+ Abrir Vaga</button>
+          </form>
+        </div>
+        <div class="painel-card">
+          <h3>Vagas Abertas</h3>
+          <ul id="lista-painel-vagas" class="items-list"></ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal de Detalhes da Instituição (Visão Doador) -->
+  <div id="modal-detalhes" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="fecharModalDetalhes()">&times;</span>
+     
+      <div class="modal-header-inst">
+        <img id="modal-logo" src="" alt="Logo da Instituição" onerror="this.src='https://via.placeholder.com/100?text=Logo'">
+        <div>
+          <h2 id="modal-nome"></h2>
+          <span id="modal-cidade" class="badge-location"></span>
+        </div>
+      </div>
+
+      <p id="modal-descricao" class="modal-desc"></p>
+      <p class="modal-info"><strong><i class="fa-solid fa-location-dot"></i> Endereço:</strong> <span id="modal-endereco"></span></p>
+      <p class="modal-info"><strong><i class="fa-solid fa-id-card"></i> CNPJ:</strong> <span id="modal-cnpj"></span></p>
+
+      <!-- Aba Doação PIX -->
+      <div class="pix-box">
+        <h3><i class="fa-solid fa-pix"></i> Doação Financeira (PIX Direto)</h3>
+        <p>Toda ajuda é bem-vinda! Copie a chave abaixo e faça sua doação direto na conta da instituição:</p>
+        <div class="pix-key-wrapper">
+          <input type="text" id="modal-pix-key" readonly>
+          <button onclick="copiarPix()"><i class="fa-solid fa-copy"></i> Copiar</button>
+        </div>
+        <small id="pix-tipo"></small>
+      </div>
+
+      <!-- Abas de Ação -->
+      <div class="action-tabs">
+        <button class="tab-btn active" onclick="alternarAba('tab-materiais')"><i class="fa-solid fa-box-open"></i> Necessidades de Itens</button>
+        <button class="tab-btn" onclick="alternarAba('tab-voluntariado')"><i class="fa-solid fa-hands-helping"></i> Vagas de Voluntariado</button>
+      </div>
+
+      <!-- Conteúdo Aba 1: Necessidades -->
+      <div id="tab-materiais" class="tab-content active">
+        <ul id="lista-necessidades" class="items-list"></ul>
+      </div>
+
+      <!-- Conteúdo Aba 2: Voluntariado -->
+      <div id="tab-voluntariado" class="tab-content">
+        <ul id="lista-vagas" class="items-list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Agendamento / Envio WhatsApp -->
+  <div id="modal-agendamento" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="fecharModalAgendamento()">&times;</span>
+      <h3><i class="fa-solid fa-calendar-check"></i> Finalizar Agendamento / Contato</h3>
+      <p>Preencha os dados abaixo para enviar a confirmação direto no WhatsApp da instituição:</p>
+
+      <form id="form-agendamento" class="form-group" onsubmit="enviarAgendamento(event)">
+        <input type="hidden" id="agendamento-inst-id">
+        <input type="hidden" id="agendamento-inst-whats">
+        <input type="hidden" id="agendamento-tipo">
+        <input type="hidden" id="agendamento-item-servico">
+
+        <label>Seu Nome Completo:</label>
+        <input type="text" id="agendamento-nome" required placeholder="Ex: João da Silva">
+
+        <label>Seu Telefone/WhatsApp:</label>
+        <input type="text" id="agendamento-telefone" required placeholder="Ex: (12) 99999-8888">
+
+        <label>Data Pretendida:</label>
+        <input type="date" id="agendamento-data" required>
+
+        <label>Horário Pretendido:</label>
+        <input type="time" id="agendamento-horario" required>
+
+        <label>Observação / Mensagem (opcional):</label>
+        <textarea id="agendamento-obs" placeholder="Ex: Vou levar 5 caixas de leite no período da manhã."></textarea>
+
+        <button type="submit" class="btn-confirmar-whats">
+          <i class="fa-brands fa-whatsapp"></i> Agendar e Abrir WhatsApp
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Login Instituição -->
+  <div id="modal-login" class="modal">
+    <div class="modal-content modal-small">
+      <span class="close-btn" onclick="fecharModalLogin()">&times;</span>
+      <h3><i class="fa-solid fa-lock"></i> Entrar na Área Restrita</h3>
+      <p>Acesso exclusivo para as instituições cadastradas.</p>
+     
+      <form class="form-group" onsubmit="fazerLogin(event)">
+        <label>ID da Instituição:</label>
+        <input type="text" id="login-id" required placeholder="Ex: INST-001">
+
+        <label>Senha:</label>
+        <input type="password" id="login-senha" required placeholder="Sua senha">
+
+        <button type="submit" class="btn-ver-mais" style="margin-top:10px;">Acessar Painel</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <p>Conecta Solidário &copy; 2026 - Desenvolvido para transformar vidas na nossa comunidade.</p>
+  </footer>
+
+  <script>
+    // Cole aqui a URL do seu Google Apps Script publicado
+    const API_URL = "https://script.google.com/macros/s/AKfycbwvroGtyeyArHO4Z5E4WwF32U6dTDgmDPY1C7DIZXf9H8aNI58zT40tg2uu1bNgMub18A/exec";
+
+    let dadosGlobais = {
+      instituicoes: [],
+      necessidades: [],
+      vagas: []
+    };
+
+    let instituicaoLogada = null;
+
+    // Inicialização da Aplicação
+    document.addEventListener("DOMContentLoaded", () => {
+      carregarDados();
+    });
+
+    // Busca dados da API
+    async function carregarDados() {
+      const grid = document.getElementById("grid-instituicoes");
+      try {
+        const response = await fetch(API_URL + "?action=getDadosGerais");
+        dadosGlobais = await response.json();
+        renderizarCards();
+        if (instituicaoLogada) {
+          atualizarListasPainel();
+        }
+      } catch (error) {
+        console.error("Erro ao carregar dados:", error);
+        grid.innerHTML = `<p style="color:red; text-align:center;">Erro ao carregar dados do servidor. Verifique o link da API.</p>`;
+      }
+    }
+
+    // Renderiza a Vitrine das Instituições
+    function renderizarCards() {
+      const grid = document.getElementById("grid-instituicoes");
+      grid.innerHTML = "";
+
+      if (!dadosGlobais.instituicoes || dadosGlobais.instituicoes.length === 0) {
+        grid.innerHTML = `<p style="text-align:center;">Nenhuma instituição cadastrada no momento.</p>`;
+        return;
+      }
+
+      dadosGlobais.instituicoes.forEach(inst => {
+        const logo = inst.logo_url && inst.logo_url.trim() !== "" ? inst.logo_url : "https://via.placeholder.com/80?text=Logo";
+       
+        const card = document.createElement("div");
+        card.className = "card-inst";
+        card.innerHTML = `
+          <div class="card-header-info">
+            <img class="card-logo" src="${logo}" alt="${inst.nome}" onerror="this.src='https://via.placeholder.com/80?text=Logo'">
+            <div class="card-title-area">
+              <h3>${inst.nome}</h3>
+              <span class="card-bairro"><i class="fa-solid fa-location-dot"></i> ${inst.bairro || 'Centro'} - ${inst.cidade || ''}</span>
+            </div>
+          </div>
+          <p class="card-desc">${inst.descricao_missao ? inst.descricao_missao.substring(0, 90) + '...' : ''}</p>
+          <button class="btn-ver-mais" onclick="abrirModalDetalhes('${inst.id_instituicao}')">
+            Ver Como Ajudar / Contato
+          </button>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Abre o Modal de Detalhes
+    function abrirModalDetalhes(idInst) {
+      const inst = dadosGlobais.instituicoes.find(i => String(i.id_instituicao) === String(idInst));
+      if (!inst) return;
+
+      document.getElementById("modal-logo").src = inst.logo_url || "https://via.placeholder.com/80?text=Logo";
+      document.getElementById("modal-nome").innerText = inst.nome;
+      document.getElementById("modal-cidade").innerText = `${inst.bairro || ''} - ${inst.cidade || ''}`;
+      document.getElementById("modal-descricao").innerText = inst.descricao_missao || "Sem descrição disponível.";
+      document.getElementById("modal-endereco").innerText = inst.endereco || "Não informado";
+      document.getElementById("modal-cnpj").innerText = inst.cnpj || "Não informado";
+
+      document.getElementById("modal-pix-key").value = inst.chave_pix || "Chave não cadastrada";
+      document.getElementById("pix-tipo").innerText = inst.tipo_pix ? `Tipo de Chave: ${inst.tipo_pix}` : "";
+
+      // Renderizar Lista de Necessidades
+      const listaNec = document.getElementById("lista-necessidades");
+      listaNec.innerHTML = "";
+      const necFiltradas = dadosGlobais.necessidades.filter(n => String(n.id_instituicao) === String(idInst));
+
+      if (necFiltradas.length === 0) {
+        listaNec.innerHTML = "<li>Nenhum item solicitado no momento.</li>";
+      } else {
+        necFiltradas.forEach(item => {
+          listaNec.innerHTML += `
+            <li>
+              <div class="item-info">
+                <h4>${item.item}</h4>
+                <p>Qtd: ${item.quantidade_necessaria} ${item.unidade} | Urgência: <strong>${item.urgencia}</strong></p>
+              </div>
+              <button class="btn-agendar-item" onclick="abrirModalAgendamento('${inst.id_instituicao}', '${inst.telefone_whatsapp}', 'Doação de Itens', '${item.item}')">
+                Quero Doar
+              </button>
+            </li>
+          `;
+        });
+      }
+
+      // Renderizar Lista de Vagas de Voluntariado
+      const listaVag = document.getElementById("lista-vagas");
+      listaVag.innerHTML = "";
+      const vagFiltradas = dadosGlobais.vagas.filter(v => String(v.id_instituicao) === String(idInst));
+
+      if (vagFiltradas.length === 0) {
+        listaVag.innerHTML = "<li>Nenhuma vaga de voluntariado no momento.</li>";
+      } else {
+        vagFiltradas.forEach(vaga => {
+          listaVag.innerHTML += `
+            <li>
+              <div class="item-info">
+                <h4>${vaga.titulo_servico}</h4>
+                <p>${vaga.descricao} (${vaga.dias_semana} - ${vaga.horario})</p>
+              </div>
+              <button class="btn-agendar-item" onclick="abrirModalAgendamento('${inst.id_instituicao}', '${inst.telefone_whatsapp}', 'Voluntariado', '${vaga.titulo_servico}')">
+                Quero Me Candidatar
+              </button>
+            </li>
+          `;
+        });
+      }
+
+      document.getElementById("modal-detalhes").style.display = "flex";
+    }
+
+    function fecharModalDetalhes() {
+      document.getElementById("modal-detalhes").style.display = "none";
+    }
+
+    function copiarPix() {
+      const campoPix = document.getElementById("modal-pix-key");
+      campoPix.select();
+      document.execCommand("copy");
+      alert("Chave Pix copiada com sucesso!");
+    }
+
+    function alternarAba(tabId) {
+      document.querySelectorAll("#modal-detalhes .tab-content").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll("#modal-detalhes .tab-btn").forEach(b => b.classList.remove("active"));
+     
+      document.getElementById(tabId).classList.add("active");
+      event.currentTarget.classList.add("active");
+    }
+
+    function abrirModalAgendamento(idInst, whats, tipo, itemServico) {
+      document.getElementById("agendamento-inst-id").value = idInst;
+      document.getElementById("agendamento-inst-whats").value = whats;
+      document.getElementById("agendamento-tipo").value = tipo;
+      document.getElementById("agendamento-item-servico").value = itemServico;
+
+      document.getElementById("modal-agendamento").style.display = "flex";
+    }
+
+    function fecharModalAgendamento() {
+      document.getElementById("modal-agendamento").style.display = "none";
+    }
+
+    async function enviarAgendamento(e) {
+      e.preventDefault();
+
+      const idInst = document.getElementById("agendamento-inst-id").value;
+      const whatsInst = document.getElementById("agendamento-inst-whats").value;
+      const tipoAcao = document.getElementById("agendamento-tipo").value;
+      const itemServico = document.getElementById("agendamento-item-servico").value;
+
+      const nome = document.getElementById("agendamento-nome").value;
+      const telefone = document.getElementById("agendamento-telefone").value;
+      const data = document.getElementById("agendamento-data").value;
+      const horario = document.getElementById("agendamento-horario").value;
+      const obs = document.getElementById("agendamento-obs").value;
+
+      const payload = {
+        action: "salvarAgendamento",
+        id_instituicao: idInst,
+        tipo_acao: tipoAcao,
+        nome_doador: nome,
+        telefone_doador: telefone,
+        item_ou_servico: itemServico,
+        data_agendada: data,
+        horario_agendado: horario,
+        observacao: obs
+      };
+
+      try {
+        await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+
+        const mensagem = `Olá! Meu nome é *${nome}*.\nVi no aplicativo o interesse para: *${tipoAcao} - ${itemServico}*.\n\nGostaria de agendar para o dia *${data}* às *${horario}*.\nMinhas observações: ${obs || 'Nenhuma'}.\nMeu contato: ${telefone}`;
+        const numLimpo = whatsInst.replace(/\D/g, '');
+        const urlWhats = `https://api.whatsapp.com/send?phone=55${numLimpo}&text=${encodeURIComponent(mensagem)}`;
+
+        fecharModalAgendamento();
+        window.open(urlWhats, "_blank");
+
+      } catch (error) {
+        alert("Agendamento salvo com sucesso! Redirecionando ao WhatsApp...");
+      }
+    }
+
+    // Modal Login
+    function abrirModalLogin() {
+      document.getElementById("modal-login").style.display = "flex";
+    }
+
+    function fecharModalLogin() {
+      document.getElementById("modal-login").style.display = "none";
+    }
+
+    async function fazerLogin(e) {
+      e.preventDefault();
+      const id = document.getElementById("login-id").value;
+      const senha = document.getElementById("login-senha").value;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "loginInstituicao", id_instituicao: id, senha: senha })
+        });
+        const result = await res.json();
+
+        if (result.status === "sucesso") {
+          instituicaoLogada = result.instituicao;
+          fecharModalLogin();
+          abrirPainelInstituicao();
+        } else {
+          alert("ID ou Senha incorretos.");
+        }
+      } catch (err) {
+        alert("Erro ao realizar login.");
+      }
+    }
+
+    // Lógica do Painel da Instituição
+    function abrirPainelInstituicao() {
+      document.getElementById("visao-publica").style.display = "none";
+      document.getElementById("painel-instituicao").style.display = "block";
+      document.getElementById("btn-login-painel").style.display = "none";
+      document.getElementById("painel-nome-inst").innerText = `Painel: ${instituicaoLogada.nome}`;
+
+      atualizarListasPainel();
+      carregarAgendamentosPainel();
+    }
+
+    function deslogarPainel() {
+      instituicaoLogada = null;
+      document.getElementById("painel-instituicao").style.display = "none";
+      document.getElementById("visao-publica").style.display = "block";
+      document.getElementById("btn-login-painel").style.display = "block";
+    }
+
+    function alternarAbaPainel(tabId) {
+      document.querySelectorAll("#painel-instituicao .tab-content").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll("#painel-instituicao .tab-btn").forEach(b => b.classList.remove("active"));
+
+      document.getElementById(tabId).classList.add("active");
+      event.currentTarget.classList.add("active");
+    }
+
+    function atualizarListasPainel() {
+      if (!instituicaoLogada) return;
+
+      // Lista Necessidades
+      const listaNecPainel = document.getElementById("lista-painel-necessidades");
+      listaNecPainel.innerHTML = "";
+      const necInst = dadosGlobais.necessidades.filter(n => String(n.id_instituicao) === String(instituicaoLogada.id_instituicao));
+
+      if (necInst.length === 0) {
+        listaNecPainel.innerHTML = "<li>Nenhum item cadastrado.</li>";
+      } else {
+        necInst.forEach(n => {
+          listaNecPainel.innerHTML += `
+            <li>
+              <div class="item-info">
+                <h4>${n.item}</h4>
+                <p>${n.quantidade_necessaria} ${n.unidade} (Urgência: ${n.urgencia})</p>
+              </div>
+              <button class="btn-delete-item" onclick="removerNecessidade('${n.id_necessidade}')"><i class="fa-solid fa-trash"></i></button>
+            </li>
+          `;
+        });
+      }
+
+      // Lista Vagas
+      const listaVagPainel = document.getElementById("lista-painel-vagas");
+      listaVagPainel.innerHTML = "";
+      const vagInst = dadosGlobais.vagas.filter(v => String(v.id_instituicao) === String(instituicaoLogada.id_instituicao));
+
+      if (vagInst.length === 0) {
+        listaVagPainel.innerHTML = "<li>Nenhuma vaga cadastrada.</li>";
+      } else {
+        vagInst.forEach(v => {
+          listaVagPainel.innerHTML += `
+            <li>
+              <div class="item-info">
+                <h4>${v.titulo_servico}</h4>
+                <p>${v.dias_semana} (${v.horario})</p>
+              </div>
+              <button class="btn-delete-item" onclick="removerVaga('${v.id_vaga}')"><i class="fa-solid fa-trash"></i></button>
+            </li>
+          `;
+        });
+      }
+    }
+
+    async function carregarAgendamentosPainel() {
+      const listaAg = document.getElementById("lista-painel-agendamentos");
+      listaAg.innerHTML = "<li>Carregando...</li>";
+
+      try {
+        const res = await fetch(`${API_URL}?action=getAgendamentosInstituicao&id_instituicao=${instituicaoLogada.id_instituicao}`);
+        const data = await res.json();
+
+        listaAg.innerHTML = "";
+        if (!data.agendamentos || data.agendamentos.length === 0) {
+          listaAg.innerHTML = "<li>Nenhum agendamento recebido até o momento.</li>";
+          return;
+        }
+
+        data.agendamentos.forEach(a => {
+          // Trata e limpa a formatação de data recebida
+          let dataFormatada = String(a.data_agendada).split("T")[0];
+          if (dataFormatada.includes("-")) {
+            const partes = dataFormatada.split("-");
+            if (partes.length === 3) dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+          }
+
+          // Trata e limpa a formatação de horário recebida
+          let horaFormatada = String(a.horario_agendado);
+          if (horaFormatada.includes("T")) {
+            horaFormatada = horaFormatada.split("T")[1].substring(0, 5);
+          }
+
+          listaAg.innerHTML += `
+            <li>
+              <div class="item-info">
+                <h4>${a.nome_doador} (${a.tipo_acao})</h4>
+                <p><strong>Item/Serviço:</strong> ${a.item_ou_servico}</p>
+                <p><strong>Data/Hora:</strong> ${dataFormatada} às ${horaFormatada}</p>
+                <p><strong>Contato:</strong> ${a.telefone_doador} | <strong>Obs:</strong> ${a.observacao || 'Nenhuma'}</p>
+              </div>
+            </li>
+          `;
+        });
+      } catch (err) {
+        listaAg.innerHTML = "<li>Erro ao carregar agendamentos.</li>";
+      }
+    }
+
+    // Ações de Cadastro/Remoção do Painel
+    async function adicionarNecessidade(e) {
+      e.preventDefault();
+      const payload = {
+        action: "adicionarNecessidade",
+        id_instituicao: instituicaoLogada.id_instituicao,
+        item: document.getElementById("nec-item").value,
+        quantidade_necessaria: document.getElementById("nec-qtd").value,
+        unidade: document.getElementById("nec-unidade").value,
+        urgencia: document.getElementById("nec-urgencia").value
+      };
+
+      await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+      alert("Necessidade cadastrada com sucesso!");
+      document.getElementById("nec-item").value = "";
+      document.getElementById("nec-qtd").value = "";
+      document.getElementById("nec-unidade").value = "";
+      await carregarDados();
+    }
+
+    async function removerNecessidade(idNec) {
+      if (!confirm("Deseja realmente remover esta necessidade?")) return;
+      await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "removerNecessidade", id_necessidade: idNec }) });
+      await carregarDados();
+    }
+
+    async function adicionarVaga(e) {
+      e.preventDefault();
+      const payload = {
+        action: "adicionarVaga",
+        id_instituicao: instituicaoLogada.id_instituicao,
+        titulo_servico: document.getElementById("vag-titulo").value,
+        descricao: document.getElementById("vag-desc").value,
+        dias_semana: document.getElementById("vag-dias").value,
+        horario: document.getElementById("vag-horario").value
+      };
+
+      await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+      alert("Vaga cadastrada com sucesso!");
+      document.getElementById("vag-titulo").value = "";
+      document.getElementById("vag-desc").value = "";
+      document.getElementById("vag-dias").value = "";
+      document.getElementById("vag-horario").value = "";
+      await carregarDados();
+    }
+
+    async function removerVaga(idVag) {
+      if (!confirm("Deseja realmente remover esta vaga?")) return;
+      await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "removerVaga", id_vaga: idVag }) });
+      await carregarDados();
+    }
+  </script>
+</body>
+</html>
+
+ 
