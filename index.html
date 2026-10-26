@@ -671,7 +671,7 @@
 
   <script>
     // Cole aqui a URL do seu Google Apps Script publicado
-    const API_URL = "https://script.google.com/macros/s/AKfycbwvroGtyeyArHO4Z5E4WwF32U6dTDgmDPY1C7DIZXf9H8aNI58zT40tg2uu1bNgMub18A/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbz7XWoXHaTN3GjJx0rbvUg8GLzc9OrFGSKMUGpLWJN0HPMSWlWR3hvkKMMC9FTSOYyh/exec";
 
     let dadosGlobais = {
       instituicoes: [],
@@ -1012,6 +1012,9 @@
                 <p><strong>Data/Hora:</strong> ${dataFormatada} às ${horaFormatada}</p>
                 <p><strong>Contato:</strong> ${a.telefone_doador} | <strong>Obs:</strong> ${a.observacao || 'Nenhuma'}</p>
               </div>
+              <button class="btn-delete-item" onclick="removerAgendamento('${a.id_agendamento}')">
+                <i class="fa-solid fa-trash"></i>
+              </button>
             </li>
           `;
         });
@@ -1070,6 +1073,19 @@
       if (!confirm("Deseja realmente remover esta vaga?")) return;
       await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "removerVaga", id_vaga: idVag }) });
       await carregarDados();
+    }
+
+    async function removerAgendamento(idAg) {
+      if (!confirm("Deseja realmente apagar esse agendamento?")) return;
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "removerAgendamento", id_agendamento: idAg })
+        });
+        carregarAgendamentosPainel();
+      } catch (err) {
+        alert("Erro ao apagar agendamento.");
+      }
     }
   </script>
 </body>
