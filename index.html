@@ -702,7 +702,7 @@
       }
     }
 
-    // Renderiza a Vitrine das Instituições
+    // Renderiza a Vitrine das Instituições com embaralhamento automático
     function renderizarCards() {
       const grid = document.getElementById("grid-instituicoes");
       grid.innerHTML = "";
@@ -712,9 +712,12 @@
         return;
       }
 
-      dadosGlobais.instituicoes.forEach(inst => {
+      // Cria uma cópia das instituições e embaralha aleatoriamente a cada carregamento
+      const instituicoesEmbaralhadas = [...dadosGlobais.instituicoes].sort(() => Math.random() - 0.5);
+
+      instituicoesEmbaralhadas.forEach(inst => {
         const logo = inst.logo_url && inst.logo_url.trim() !== "" ? inst.logo_url : "https://via.placeholder.com/80?text=Logo";
-       
+      
         const card = document.createElement("div");
         card.className = "card-inst";
         card.innerHTML = `
