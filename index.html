@@ -296,6 +296,7 @@
       gap: 10px;
       margin-top: 15px;
       border-bottom: 2px solid #eee;
+      overflow-x: auto;
     }
 
     .tab-btn {
@@ -306,6 +307,7 @@
       font-weight: bold;
       color: var(--text-light);
       border-bottom: 3px solid transparent;
+      white-space: nowrap;
     }
 
     .tab-btn.active {
@@ -336,6 +338,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
     }
 
     .item-info h4 {
@@ -355,6 +358,7 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 0.85rem;
+      white-space: nowrap;
     }
 
     .btn-delete-item {
@@ -483,7 +487,7 @@
   <main class="container" id="visao-publica">
     <section class="banner">
       <h2>Encontre projetos sociais na sua região</h2>
-      <p>Escolha uma instituição para doar itens, realizar PIX direto ou agendar um trabalho voluntário.</p>
+      <p>Escolha uma instituição para doar itens, realizar PIX direto, agendar um trabalho voluntário ou visitar a instituição.</p>
     </section>
 
     <!-- Lista de Cards -->
@@ -514,7 +518,7 @@
 
     <!-- Aba 1: Agendamentos -->
     <div id="tab-p-agendamentos" class="tab-content active">
-      <h3>Agendamentos e Intenções de Ajuda</h3>
+      <h3>Agendamentos, Visitas e Intenções de Ajuda</h3>
       <ul id="lista-painel-agendamentos" class="items-list" style="margin-top:15px;">
         <li>Carregando agendamentos...</li>
       </ul>
@@ -569,7 +573,7 @@
   <div id="modal-detalhes" class="modal">
     <div class="modal-content">
       <span class="close-btn" onclick="fecharModalDetalhes()">&times;</span>
-     
+    
       <div class="modal-header-inst">
         <img id="modal-logo" src="" alt="Logo da Instituição" onerror="this.src='https://via.placeholder.com/100?text=Logo'">
         <div>
@@ -595,8 +599,9 @@
 
       <!-- Abas de Ação -->
       <div class="action-tabs">
-        <button class="tab-btn active" onclick="alternarAba('tab-materiais')"><i class="fa-solid fa-box-open"></i> Necessidades de Itens</button>
-        <button class="tab-btn" onclick="alternarAba('tab-voluntariado')"><i class="fa-solid fa-hands-helping"></i> Vagas de Voluntariado</button>
+        <button class="tab-btn active" onclick="alternarAba('tab-materiais')"><i class="fa-solid fa-box-open"></i> Necessidades</button>
+        <button class="tab-btn" onclick="alternarAba('tab-voluntariado')"><i class="fa-solid fa-hands-helping"></i> Voluntariado</button>
+        <button class="tab-btn" onclick="alternarAba('tab-visita')"><i class="fa-solid fa-calendar-days"></i> Agendar Visita</button>
       </div>
 
       <!-- Conteúdo Aba 1: Necessidades -->
@@ -607,6 +612,16 @@
       <!-- Conteúdo Aba 2: Voluntariado -->
       <div id="tab-voluntariado" class="tab-content">
         <ul id="lista-vagas" class="items-list"></ul>
+      </div>
+
+      <!-- Conteúdo Aba 3: Agendar Visita -->
+      <div id="tab-visita" class="tab-content">
+        <div style="text-align: center; padding: 10px 0;">
+          <p style="margin-bottom: 15px; color: var(--text-light);">Deseja conhecer a instituição pessoalmente, fazer uma entrega ou alinhar uma parceria presencial?</p>
+          <button class="btn-ver-mais" id="btn-abrir-visita-modal" style="background: var(--secondary);">
+            <i class="fa-solid fa-calendar-check"></i> Agendar Visita Presencial
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -652,7 +667,7 @@
       <span class="close-btn" onclick="fecharModalLogin()">&times;</span>
       <h3><i class="fa-solid fa-lock"></i> Entrar na Área Restrita</h3>
       <p>Acesso exclusivo para as instituições cadastradas.</p>
-     
+    
       <form class="form-group" onsubmit="fazerLogin(event)">
         <label>ID da Instituição:</label>
         <input type="text" id="login-id" required placeholder="Ex: INST-001">
@@ -671,7 +686,7 @@
 
   <script>
     // Cole aqui a URL do seu Google Apps Script publicado
-    const API_URL = "https://script.google.com/macros/s/AKfycbz7XWoXHaTN3GjJx0rbvUg8GLzc9OrFGSKMUGpLWJN0HPMSWlWR3hvkKMMC9FTSOYyh/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbxHRptZEKUOLHX2pI09jke21-S-xok2hKhCyquc0lbnLBCnCI_k_hb66cY6Xnz2FQJnEg/exec";
 
     let dadosGlobais = {
       instituicoes: [],
@@ -680,6 +695,8 @@
     };
 
     let instituicaoLogada = null;
+    let instituicaoAtualModalId = null;
+    let instituicaoAtualModalWhats = null;
 
     // Inicialização da Aplicação
     document.addEventListener("DOMContentLoaded", () => {
@@ -717,7 +734,7 @@
 
       instituicoesEmbaralhadas.forEach(inst => {
         const logo = inst.logo_url && inst.logo_url.trim() !== "" ? inst.logo_url : "https://via.placeholder.com/80?text=Logo";
-      
+     
         const card = document.createElement("div");
         card.className = "card-inst";
         card.innerHTML = `
@@ -742,6 +759,9 @@
       const inst = dadosGlobais.instituicoes.find(i => String(i.id_instituicao) === String(idInst));
       if (!inst) return;
 
+      instituicaoAtualModalId = inst.id_instituicao;
+      instituicaoAtualModalWhats = inst.telefone_whatsapp;
+
       document.getElementById("modal-logo").src = inst.logo_url || "https://via.placeholder.com/80?text=Logo";
       document.getElementById("modal-nome").innerText = inst.nome;
       document.getElementById("modal-cidade").innerText = `${inst.bairro || ''} - ${inst.cidade || ''}`;
@@ -751,6 +771,12 @@
 
       document.getElementById("modal-pix-key").value = inst.chave_pix || "Chave não cadastrada";
       document.getElementById("pix-tipo").innerText = inst.tipo_pix ? `Tipo de Chave: ${inst.tipo_pix}` : "";
+
+      // Configurar botão de agendamento de visita
+      const btnVisita = document.getElementById("btn-abrir-visita-modal");
+      btnVisita.onclick = function() {
+        abrirModalAgendamento(inst.id_instituicao, inst.telefone_whatsapp, 'Visita Presencial', 'Visita à Instituição');
+      };
 
       // Renderizar Lista de Necessidades
       const listaNec = document.getElementById("lista-necessidades");
@@ -815,7 +841,7 @@
     function alternarAba(tabId) {
       document.querySelectorAll("#modal-detalhes .tab-content").forEach(t => t.classList.remove("active"));
       document.querySelectorAll("#modal-detalhes .tab-btn").forEach(b => b.classList.remove("active"));
-     
+    
       document.getElementById(tabId).classList.add("active");
       event.currentTarget.classList.add("active");
     }
@@ -989,29 +1015,38 @@
 
         listaAg.innerHTML = "";
         if (!data.agendamentos || data.agendamentos.length === 0) {
-          listaAg.innerHTML = "<li>Nenhum agendamento recebido até o momento.</li>";
+          listaAg.innerHTML = "<li>Nenhum agendamento ou visita recebida até o momento.</li>";
           return;
         }
 
         data.agendamentos.forEach(a => {
-          // Trata e limpa a formatação de data recebida
           let dataFormatada = String(a.data_agendada).split("T")[0];
           if (dataFormatada.includes("-")) {
             const partes = dataFormatada.split("-");
             if (partes.length === 3) dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
           }
 
-          // Trata e limpa a formatação de horário recebida
-          let horaFormatada = String(a.horario_agendado);
+          // Tratamento robusto do horário para corrigir a diferença de fuso horário vinda da planilha
+          let horaFormatada = String(a.horario_agendado || "");
           if (horaFormatada.includes("T")) {
-            horaFormatada = horaFormatada.split("T")[1].substring(0, 5);
+            // Extrai a parte da hora da string ISO (ex: "1899-12-30T12:06:00.000Z")
+            const partesIso = horaFormatada.split("T")[1];
+            let [h, m] = partesIso.substring(0, 5).split(":").map(Number);
+           
+            // Subtrai 3 horas para compensar o fuso horário do Google Sheets (horário do Brasil GMT-3)
+            h = h - 3;
+            if (h < 0) h += 24;
+           
+            horaFormatada = String(h).padStart(2, '0') + ":" + String(m).padStart(2, '0');
+          } else if (horaFormatada.length >= 5) {
+            horaFormatada = horaFormatada.substring(0, 5);
           }
 
           listaAg.innerHTML += `
             <li>
               <div class="item-info">
                 <h4>${a.nome_doador} (${a.tipo_acao})</h4>
-                <p><strong>Item/Serviço:</strong> ${a.item_ou_servico}</p>
+                <p><strong>Detalhe/Serviço:</strong> ${a.item_ou_servico}</p>
                 <p><strong>Data/Hora:</strong> ${dataFormatada} às ${horaFormatada}</p>
                 <p><strong>Contato:</strong> ${a.telefone_doador} | <strong>Obs:</strong> ${a.observacao || 'Nenhuma'}</p>
               </div>
