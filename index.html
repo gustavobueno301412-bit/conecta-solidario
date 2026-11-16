@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Conecta Solidário - Doações e Voluntariado</title>
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
@@ -573,7 +574,7 @@
   <div id="modal-detalhes" class="modal">
     <div class="modal-content">
       <span class="close-btn" onclick="fecharModalDetalhes()">&times;</span>
-    
+  
       <div class="modal-header-inst">
         <img id="modal-logo" src="" alt="Logo da Instituição" onerror="this.src='https://via.placeholder.com/100?text=Logo'">
         <div>
@@ -667,7 +668,7 @@
       <span class="close-btn" onclick="fecharModalLogin()">&times;</span>
       <h3><i class="fa-solid fa-lock"></i> Entrar na Área Restrita</h3>
       <p>Acesso exclusivo para as instituições cadastradas.</p>
-    
+  
       <form class="form-group" onsubmit="fazerLogin(event)">
         <label>ID da Instituição:</label>
         <input type="text" id="login-id" required placeholder="Ex: INST-001">
@@ -734,7 +735,7 @@
 
       instituicoesEmbaralhadas.forEach(inst => {
         const logo = inst.logo_url && inst.logo_url.trim() !== "" ? inst.logo_url : "https://via.placeholder.com/80?text=Logo";
-     
+    
         const card = document.createElement("div");
         card.className = "card-inst";
         card.innerHTML = `
@@ -841,7 +842,7 @@
     function alternarAba(tabId) {
       document.querySelectorAll("#modal-detalhes .tab-content").forEach(t => t.classList.remove("active"));
       document.querySelectorAll("#modal-detalhes .tab-btn").forEach(b => b.classList.remove("active"));
-    
+  
       document.getElementById(tabId).classList.add("active");
       event.currentTarget.classList.add("active");
     }
@@ -1032,11 +1033,11 @@
             // Extrai a parte da hora da string ISO (ex: "1899-12-30T12:06:00.000Z")
             const partesIso = horaFormatada.split("T")[1];
             let [h, m] = partesIso.substring(0, 5).split(":").map(Number);
-           
+          
             // Subtrai 3 horas para compensar o fuso horário do Google Sheets (horário do Brasil GMT-3)
             h = h - 3;
             if (h < 0) h += 24;
-           
+          
             horaFormatada = String(h).padStart(2, '0') + ":" + String(m).padStart(2, '0');
           } else if (horaFormatada.length >= 5) {
             horaFormatada = horaFormatada.substring(0, 5);
@@ -1128,5 +1129,7 @@
   </script>
 </body>
 </html>
+
+ 
 
  
